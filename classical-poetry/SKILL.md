@@ -1,292 +1,397 @@
 ---
 name: classical-poetry
-description: Create and validate classical Chinese poetry (律诗/绝句/排律、词、曲、对联) with meter/rhyme checks, including pingshui/new/tong韵, 词谱格式、曲牌格律、对仗平仄与词汇建议。Use when generating or correcting poems/cis/qu/couplets to match a specified theme, form, or meter, or when analyzing平仄、押韵、对仗、用韵与替换建议. Trigger when user asks to write/create/generate classical Chinese poetry, couplets, ci (词), or qu (曲), or when they ask to check/validate/analyze meter, rhyme, or tonal patterns.
+description: 创建古典汉诗（律诗/绝句/排律、词、曲、对联）。适用于生成或修正符合特定主题、体裁或韵律的诗词曲对联。
 ---
 
-# Classical Poetry Creation Workflow
+# 古典诗词创作工作流
 
-This skill guides you through creating classical Chinese poetry (诗/词/曲/对联) with proper meter and rhyme validation. Use a structured workflow: Requirements Gathering → Context & Inspiration → Drafting → Validation → Refinement.
+本技能通过结构化流程指导你创作古典诗词（诗/词/曲/对联），并进行格律和韵律验证。工作流程：需求收集 → 意象采集 → 起草 → 格律验证 → 修改润色。
 
-## When to Offer This Workflow
+## 语言要求
 
-**Trigger conditions:**
-- User asks to write classical poetry: "写一首诗", "create a poem", "作诗"
-- User mentions specific forms: "五言绝句", "七律", "词", "对联"
-- User asks to validate existing poetry: "check this poem", "这首诗格律对吗"
-- User provides a theme and wants a poem: "写一首关于中秋的诗"
+**IMPORTANT: 全程使用中文与用户交流。**所有阶段说明、问题询问、结果呈现都必须使用中文。
 
-**Initial offer:**
-Offer the structured workflow for poetry creation. Explain the stages:
+## 何时触发此工作流
 
-1. **Requirements Gathering**: Determine genre, form, rhyme system, theme
-2. **Context & Inspiration**: Build imagery pool from classical references
-3. **Drafting**: Create the poem using appropriate imagery and structure
-4. **Validation**: Check meter, rhyme, and tonal patterns automatically
-5. **Refinement**: Fix any issues and polish the poem
+**触发条件：**
+- 用户要求创作古典诗词："写一首诗"、"create a poem"、"作诗"
+- 用户提到具体体裁："五言绝句"、"七律"、"词"、"对联"
+- 用户要求验证已有诗词："check this poem"、"这首诗格律对吗"
+- 用户提供主题并要诗："写一首关于中秋的诗"
 
-Explain that this ensures the poem follows proper classical Chinese poetry rules (格律). Ask if they want to use this workflow or prefer freeform composition.
+**初始应答：**
+用中文向用户介绍结构化创作流程，说明包含以下阶段：
 
-If user declines, compose freeform. If user accepts, proceed to Stage 1.
+1. **需求收集**：确定体裁、格式、韵书、主题
+2. **意象采集**：从古典诗词中提取相关意象词汇
+3. **起草创作**：运用意象和结构创作诗词
+4. **格律验证**：自动检查平仄、韵律、对仗
+5. **修改润色**：修正问题并优化诗词
 
-## Stage 1: Requirements Gathering
+用中文说明这能确保诗词符合古典格律规则。询问用户是否使用此流程，还是自由创作。
 
-**Goal:** Understand exactly what type of poetry to create and the constraints.
+如果用户拒绝，则自由创作。如果用户同意，进入第一阶段。
 
-### Initial Questions
+## 第一阶段：需求收集
 
-Ask the user for specific requirements:
+**目标：** 准确了解要创作的诗词类型和约束条件。
 
-1. **Genre** (体裁): 诗 (shi poetry), 词 (ci lyric), 曲 (qu opera lyric), or 对联 (couplet)?
-2. **Form** (格式):
-   - For 诗: 五言绝句, 七言绝句, 五言律诗, 七言律诗, 排律?
-   - For 词: Which 词牌 (ci pattern)? E.g., 水调歌头, 念奴娇, 定风波
-   - For 曲: Which 曲牌 (qu pattern)? E.g., 天净沙
-   - For 对联: How many characters?
-3. **Rhyme system** (韵书): 平水韵 (traditional), 中华新韵 (modern), or 中华通韵?
-4. **Language**: 简体字 (simplified) or 繁体字 (traditional)?
-5. **Theme** (主题): What is the poem about?
-6. **Mood/Style** (意境): Any specific emotional tone or imagery preference?
+### 初始问题
 
-Inform them they can answer in any format. If they've already specified some requirements, only ask about missing information.
+**用中文**向用户询问具体需求（如果用户已在请求中说明部分需求，则只询问缺失的信息）：
 
-**Common defaults if user doesn't specify:**
-- Rhyme system: 平水韵 (most classical)
-- Language: 简体字
-- Form: 七言绝句 (most popular for beginners)
+1. **体裁**：诗、词、曲，还是对联？
+   - 如果已知是诗，询问：五言绝句、七言绝句、五言律诗、七言律诗，还是排律？
+   - 如果已知是词，询问：词牌名是什么？（例如：水调歌头、念奴娇、定风波）
+   - 如果已知是曲，询问：曲牌名是什么？（例如：天净沙）
+   - 如果是对联，询问：上下联各多少字？
 
-**Exit condition:**
-Have clear answers for: genre, form, theme. Rhyme system and language can use defaults.
+2. **韵书选择**（必须明确询问，不使用默认值）：
+   - 对于**诗**或**对联**，用中文询问：
+     ```
+     请选择韵书：
+     1. 平水韵（传统韵书，适合古体诗）
+     2. 中华新韵（现代韵书，以普通话为基础）
+     3. 中华通韵（兼容传统与现代）
+     ```
+   - 对于**词**，用中文询问：
+     ```
+     请选择韵书：
+     1. 平水韵（传统韵书）
+     2. 词林正韵（专门用于词的韵书）
+     3. 中华新韵（现代韵书）
+     ```
+   - 对于**曲**，用中文询问：
+     ```
+     请选择韵书：
+     1. 平水韵（传统韵书）
+     2. 中华新韵（现代韵书）
+     3. 中华通韵（兼容韵书）
+     ```
 
-**Transition:**
-Confirm the requirements with the user. For example:
-"I'll create a 七言绝句 about 中秋 using 平水韵 in simplified Chinese. Ready to gather inspiration?"
+   **记录用户选择的韵书编号和名称，用于后续验证。**
 
-Proceed to Stage 2.
+3. **语言文字**：简体字还是繁体字？（如未说明可询问，或默认简体字）
 
-## Stage 2: Context & Inspiration
+4. **主题**：诗词的主题是什么？（如用户已说明则跳过）
 
-**Goal:** Build an imagery pool from classical poetry on the same theme to ensure authentic classical style.
+5. **意境风格**：有无特定的情感基调或意象偏好？（可选）
 
-### Reference Search
+### 韵书映射表（供内部使用）
 
-Use `scripts/reference_builder.py` to fetch related classical poems:
+记录用户选择的韵书，在验证阶段使用对应的参数：
+
+| 韵书名称 | validation时的 --yun-shu 参数 |
+|---------|------------------------------|
+| 平水韵   | 1                            |
+| 中华新韵 | 2                            |
+| 中华通韵 | 3                            |
+| 词林正韵 | 1（注：词林正韵使用平水韵的平仄系统） |
+
+**退出条件：**
+已明确：体裁、格式、主题、韵书选择。
+
+**过渡：**
+用中文向用户确认需求。例如：
+```
+好的，我将为您创作一首关于中秋的七言律诗，使用平水韵，简体字。
+现在开始收集意象素材。
+```
+
+进入第二阶段。
+
+## 第二阶段：意象采集
+
+**目标：** 从古典诗词中提取与主题相关的意象词汇，确保作品具有古典风格。
+
+### 意象搜索
+
+用中文告知用户："正在收集与「[主题]」相关的古典意象..."
+
+使用 `scripts/reference_builder.py` 获取相关古典诗词：
 
 ```bash
-~/.uv/python3/bin/python scripts/reference_builder.py \
-  --keyword "[THEME]" --pages 3 --scope Sentence --top 40 \
+~/.uv/python3/bin/python ~/.claude/skills/classical-poetry/scripts/reference_builder.py \
+  --keyword "[主题]" --pages 2 --scope Sentence --top 30 \
   --out "/tmp/poetry_refs.json"
 ```
 
-**Important:** Extract only imagery tokens (意象) and high-frequency words, NOT complete lines. This prevents plagiarism while providing classical vocabulary.
+**重要：** 只提取意象词汇（意象）和高频词，**不要**使用完整诗句。这能避免抄袭，同时获得古典词汇。
 
-### Imagery Analysis
+### 意象分析
 
-From the reference search results:
-1. Identify common imagery patterns (e.g., for 中秋: 月, 思乡, 桂花, 玉兔)
-2. Note tonal characteristics of frequently used words
-3. Consider seasonal and emotional associations
+从搜索结果中：
+1. 识别常见意象模式（例如中秋：月、思乡、桂花、玉兔）
+2. 注意常用字词的平仄特征
+3. 考虑季节和情感关联
 
-**If reference search unavailable:**
-Draw from general knowledge of classical Chinese poetry conventions for the theme.
-
-**Exit condition:**
-Have a pool of 15-30 relevant classical imagery terms and phrases.
-
-**Transition:**
-Announce: "I've gathered classical imagery for [THEME]. Ready to draft the poem."
-
-Proceed to Stage 3.
-
-## Stage 3: Drafting
-
-**Goal:** Compose the poem using proper structure and classical imagery.
-
-### Drafting Guidelines
-
-**For 诗 (Shi Poetry):**
-- Keep the meter pattern in mind (五言: 5 chars/line, 七言: 7 chars/line)
-- Plan rhyme positions (绝句: lines 2&4, 律诗: lines 2,4,6,8)
-- Use imagery from the pool naturally
-- Follow 起承转合 structure for quatrains
-
-**For 词 (Ci):**
-- Must match the exact 词牌 pattern (character count per line)
-- Rhyme positions depend on the specific 词牌
-- May require specific tonal patterns for certain positions
-
-**For 曲 (Qu):**
-- Follow the 曲牌 pattern if specified
-- More flexible than 词, allows 衬字 (padding words)
-
-**For 对联 (Couplets):**
-- Upper and lower lines must have matching tones (平仄相对)
-- Semantic parallelism required
-- Upper line ends with 仄, lower line ends with 平
-
-### Composition Process
-
-1. Draft the complete poem based on requirements and imagery pool
-2. Present the draft to the user
-3. Immediately proceed to validation (Stage 4) without waiting
-
-**Do NOT ask if the draft is okay** - validation will reveal issues objectively.
-
-## Stage 4: Validation
-
-**Goal:** Use automated tools to check meter, rhyme, and tonal patterns.
-
-### Running Validation
-
-Based on the genre, run the appropriate checker:
-
-**For 诗 (Shi):**
-```bash
-~/.uv/python3/bin/python scripts/poetry_checker.py \
-  --mode shi --text "[POEM_TEXT]" --yun-shu [1|2|3] [--trad]
+用中文向用户简要说明收集到的核心意象（3-5个即可），例如：
+```
+已收集到核心意象：明月、千里、秋夜、桂花、思乡
 ```
 
-**For 词 (Ci):**
+**如果意象搜索不可用：**
+从古典诗词通用知识中提取该主题的常见意象。
+
+**退出条件：**
+已获得 15-30 个相关意象词汇。
+
+**过渡：**
+用中文告知："意象收集完成，开始创作诗词。"
+
+进入第三阶段。
+
+## 第三阶段：起草创作
+
+**目标：** 运用正确的结构和古典意象创作诗词。
+
+### 创作指南
+
+**对于诗：**
+- 注意字数（五言：5字/句，七言：7字/句）
+- 规划押韵位置（绝句：第2、4句押韵；律诗：第2、4、6、8句押韵）
+- 自然运用意象词汇
+- 绝句遵循"起承转合"结构
+
+**对于词：**
+- 必须符合词牌的字数格式（每句字数）
+- 押韵位置取决于具体词牌
+- 某些位置可能需要特定平仄
+
+**对于曲：**
+- 遵循曲牌格律（如已指定）
+- 比词更灵活，允许衬字
+
+**对于对联：**
+- 上下联平仄相对
+- 需要语义对仗
+- 上联末字仄声，下联末字平声
+
+### 创作流程
+
+1. 基于需求和意象词汇起草完整诗词
+2. 用中文向用户呈现初稿，例如：
+   ```
+   初稿如下：
+
+   [诗词内容]
+
+   现在进行格律验证...
+   ```
+3. 立即进入验证阶段（第四阶段），**不要**等待用户确认
+
+**不要**询问"初稿是否可以"——格律验证会客观揭示问题。
+
+## 第四阶段：格律验证
+
+**目标：** 使用自动工具检查平仄、韵律、对仗。
+
+### 执行验证
+
+**重要：使用第一阶段记录的韵书参数。**
+
+根据体裁运行对应的检查器：
+
+**对于诗：**
 ```bash
-~/.uv/python3/bin/python scripts/poetry_checker.py \
-  --mode ci --text "[POEM_TEXT]" --ci-pai "[CI_PAI_NAME]" \
-  --ci-pu [1|2] --yun-shu [1|2|3] [--trad]
+~/.uv/python3/bin/python ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+  --mode shi --text "[诗词文本]" --yun-shu [用户选择的韵书编号] [--trad如果是繁体]
 ```
 
-**For 曲 (Qu):**
+**对于词：**
 ```bash
-~/.uv/python3/bin/python scripts/poetry_checker.py \
-  --mode qu --text "[POEM_TEXT]" --qu-pai "[QU_PAI_NAME]" \
-  --yun-shu [1|2|3] [--trad]
+~/.uv/python3/bin/python ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+  --mode ci --text "[词文本]" --ci-pai "[词牌名]" \
+  --ci-pu [1|2] --yun-shu [用户选择的韵书编号] [--trad如果是繁体]
 ```
 
-**For 对联 (Couplet):**
+注：
+- `--ci-pu 1` = 钦定词谱（默认）
+- `--ci-pu 2` = 龙榆生词谱
+- 如果用户选择了"词林正韵"，使用 `--yun-shu 1`（词林正韵使用平水韵的平仄系统）
+
+**对于曲：**
 ```bash
-~/.uv/python3/bin/python scripts/poetry_checker.py \
-  --mode couplet --upper "[UPPER_LINE]" --lower "[LOWER_LINE]" \
-  --yun-shu [1|2|3] [--auto-suggest]
+~/.uv/python3/bin/python ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+  --mode qu --text "[曲文本]" --qu-pai "[曲牌名]" \
+  --yun-shu [用户选择的韵书编号] [--trad如果是繁体]
 ```
 
-### Interpreting Results
-
-The checker outputs:
-- **〇** = Correct tonal position
-- **●** = Incorrect tonal position (needs fixing)
-- **◎** = Polyphone character (多音字, needs context verification)
-- **�** = Unrecognized character
-
-**Exit condition:**
-- If validation passes (all 〇 marks): Proceed to Stage 5 for final review
-- If validation fails (any ● or ◎ marks): Enter refinement loop
-
-## Stage 5: Refinement
-
-**Goal:** Fix tonal issues and polish the poem while preserving meaning and imagery.
-
-### Fixing Tonal Issues
-
-For each ● or ◎ position:
-
-1. **Identify the problem**: Which character violates the tonal pattern?
-2. **Find alternatives**: Use `scripts/souyun_api.py` to find words with correct tones
-3. **Consider meaning**: Choose alternatives that preserve or enhance meaning
-4. **Check for 多音字**: Verify polyphone characters are pronounced correctly in context
-
-### For Couplets
-
-Use the `--auto-suggest` flag to automatically generate alternative characters:
-
+**对于对联：**
 ```bash
-~/.uv/python3/bin/python scripts/poetry_checker.py \
-  --mode couplet --upper "[UPPER]" --lower "[LOWER]" \
-  --yun-shu 1 --auto-suggest
+~/.uv/python3/bin/python ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+  --mode couplet --upper "[上联]" --lower "[下联]" \
+  --yun-shu [用户选择的韵书编号] [--auto-suggest]
 ```
 
-The tool will suggest replacements for mismatched positions.
+### 结果解读
 
-### Refinement Process
+用中文向用户解释验证结果：
 
-1. Make targeted character substitutions
-2. Re-run validation
-3. If new issues appear, repeat
-4. Once validation passes, present the corrected version to user
+验证工具输出符号含义：
+- **〇** = 平仄正确
+- **●** = 平仄错误（需要修改）
+- **◎** = 多音字（需要根据上下文验证读音）
+- **�** = 无法识别的字符
 
-**Important:**
-- Change only what's necessary to fix tonal issues
-- Preserve the core imagery and meaning
-- Maintain natural flow and readability
+用中文总结验证结果，例如：
+```
+格律验证完成：
+- 诗体：七言律诗
+- 韵部：平水韵尤韵
+- 押韵：第2、4、6、8句押韵，韵脚为：楼、流、愁、头
+- 平仄：第3句第2字平仄不合（需要修改）
+```
 
-### Allow User Edits
+**退出条件：**
+- 如果验证通过（全部 〇 标记）：进入第五阶段做最后确认
+- 如果验证失败（有任何 ● 或 ◎ 标记）：进入修改润色循环
 
-After presenting the refined version:
-- Ask if the user wants any meaning or imagery changes
-- If yes, make changes and re-validate
-- Iterate until user is satisfied
+## 第五阶段：修改润色
 
-**Exit condition:**
-Validation passes AND user approves the content.
+**目标：** 修正平仄问题并润色诗词，同时保持原意和意象。
 
-## Stage 6: Final Delivery
+### 修正平仄问题
 
-**Goal:** Present the completed poem with validation report.
+对每个 ● 或 ◎ 标记的位置：
 
-### Presentation Format
+1. **识别问题**：哪个字违反了平仄格律？
+2. **寻找替代字**：可使用 `scripts/souyun_api.py` 查找正确平仄的字词
+3. **考虑意义**：选择能保留或增强意义的替代字
+4. **检查多音字**：验证多音字在上下文中的正确读音
 
-Present the final poem with:
-1. The complete poem text
-2. Brief validation summary (e.g., "五言绝句, 平水韵尤韵, 格律正确")
-3. Tonal pattern display (optional, only if user wants to see details)
-4. Any notes about imagery choices or historical allusions used
+用中文说明修改内容，例如：
+```
+修改建议：
+第3句第2字「看」应为仄声，可改为「望」
+```
 
-### Optional Elements
+### 对联的自动建议
 
-Offer to provide:
-- Explanation of imagery and allusions
-- Pinyin or pronunciation guide
-- Translation to modern Chinese or English
-- Calligraphy-style formatting
+对于对联，可使用 `--auto-suggest` 自动生成替代字：
 
-**Completion:**
-Confirm the poem is complete. Ask if they want to create another poem or make any final adjustments.
+```bash
+~/.uv/python3/bin/python ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+  --mode couplet --upper "[上联]" --lower "[下联]" \
+  --yun-shu [用户选择的韵书编号] --auto-suggest
+```
 
-## Technical Reference
+工具会为不匹配的位置建议替换字。
 
-For detailed documentation on scripts and APIs, see:
-- `references/souyun_api.md` - API endpoints for rhyme lookup and word suggestions
-- `references/qu_patterns.md` - 曲牌 pattern templates
-- The scripts in `scripts/` directory handle validation automatically
+### 润色流程
 
-### Key Scripts
+1. 进行针对性的字词替换
+2. 重新运行验证
+3. 如果出现新问题，重复修改
+4. 验证通过后，用中文向用户呈现修改后的版本
 
-- `scripts/poetry_checker.py` - Main validation tool for all genres
-- `scripts/reference_builder.py` - Fetch classical poetry references by theme
-- `scripts/souyun_api.py` - Helper functions for online rhyme dictionary
-- `scripts/review_pipeline.py` - Automated validation and review workflow
+**重要原则：**
+- 只修改必要的地方以符合格律
+- 保留核心意象和意义
+- 保持自然流畅的语感
 
-### Configuration
+### 允许用户调整
 
-- **Rhyme systems**: 1=平水韵, 2=中华新韵, 3=中华通韵
-- **词谱**: 1=钦定词谱, 2=龙榆生词谱
-- **Python runtime**: `~/.uv/python3/bin/python`
+呈现修改后的版本后，用中文询问：
+```
+格律验证已通过。您是否需要调整某些字词的意义或意象？
+```
 
-## Tips for Effective Poetry Creation
+- 如果用户要求修改，进行调整并重新验证
+- 迭代直到用户满意
 
-**Workflow Tips:**
-- Don't rush - classical poetry requires multiple validation iterations
-- Trust the automated checker over intuition for tonal patterns
-- Use the reference search to ensure classical authenticity
+**退出条件：**
+验证通过**且**用户认可内容。
 
-**Common Issues:**
-- 多音字 (polyphones): Verify pronunciation in context
-- 孤平 violations: Often fixed by changing one character
-- Rhyme mismatch: Use Souyun API to find rhyming alternatives
+## 第六阶段：最终交付
 
-**Quality Indicators:**
-- Natural flow despite tonal constraints
-- Vivid imagery appropriate to theme
-- Emotional resonance and 意境
-- No forced or awkward phrasing just to meet meter
+**目标：** 呈现完成的诗词及验证报告。
 
-**For Advanced Users:**
-- 对仗 (parallelism) in 律诗 is checked but can be refined manually
-- Consider historical allusions for depth
-- 词 and 曲 often have more flexible tonal patterns than 诗
+### 呈现格式
+
+用中文呈现最终诗词：
+
+1. **完整诗词文本**（格式清晰）
+2. **格律总结**，例如：
+   ```
+   【格律验证】
+   - 诗体：七言律诗
+   - 韵书：平水韵
+   - 韵部：尤韵
+   - 韵脚：楼、流、愁、秋、头
+   - 格律：符合平仄要求
+   ```
+3. **平仄格式**（可选，仅在用户要求时显示详细格式）
+4. **意象说明**（如使用了典故或特殊意象，简要说明）
+
+### 可选内容
+
+用中文询问是否需要：
+- 意象和典故解释
+- 拼音或读音指导
+- 白话文翻译或英文翻译
+- 书法排版格式
+
+**完成确认：**
+用中文确认创作完成：
+```
+诗词创作完成。您是否需要：
+1. 调整某些内容
+2. 创作另一首诗词
+3. 其他需求
+```
+
+## 技术参考
+
+### 参考文档
+
+详细文档请参考：
+- `references/souyun_api.md` - 搜韵API接口，用于韵字查询和对仗词建议
+- `references/qu_patterns.md` - 曲牌格律模板
+- `scripts/` 目录中的脚本自动处理验证
+
+### 核心脚本
+
+- `scripts/poetry_checker.py` - 主验证工具，支持所有体裁
+- `scripts/reference_builder.py` - 按主题获取古典诗词参考
+- `scripts/souyun_api.py` - 在线韵书查询辅助函数
+- `scripts/review_pipeline.py` - 自动验证和审查工作流
+
+### 配置说明
+
+**韵书编号（yun-shu参数）：**
+- 1 = 平水韵
+- 2 = 中华新韵
+- 3 = 中华通韵
+- 词林正韵 = 使用参数1（基于平水韵的平仄系统）
+
+**词谱选择（ci-pu参数）：**
+- 1 = 钦定词谱（默认）
+- 2 = 龙榆生词谱
+
+**Python运行环境：** `~/.uv/python3/bin/python`
+
+**脚本路径：** `~/.claude/skills/classical-poetry/scripts/`
+
+## 创作技巧
+
+**工作流程建议：**
+- 不要急于求成——古典诗词需要多次验证迭代
+- 对于平仄格律，信任自动检查器而非直觉
+- 使用意象搜索确保古典韵味的真实性
+
+**常见问题：**
+- **多音字**：根据上下文验证读音是否正确
+- **孤平问题**：通常只需修改一个字即可解决
+- **押韵不合**：使用搜韵API查找同韵的替代字
+
+**质量标准：**
+- 在格律约束下仍保持自然流畅
+- 意象生动切合主题
+- 具有情感共鸣和意境
+- 没有为凑格律而生硬造句
+
+**高级用法：**
+- 律诗的对仗（对仗）虽有自动检查，但可手工精修
+- 考虑使用典故增加诗词深度
+- 词和曲的平仄格律通常比诗更灵活
