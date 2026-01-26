@@ -75,36 +75,27 @@ For knowledge extraction tasks, predefine allowed entity types and relationship 
 
 ## Best Practices for Portable Skills
 
-### Dynamic Path Resolution
+### Path Convention
 
 **Problem:** Skills installed in different locations need to reference their own scripts and resources.
 
-**Solution:** Implement dynamic path detection at skill initialization:
+**Simple Solution:** Use a `SKILL_ROOT` variable with simple convention:
 
-1. **Search common locations first** (fast path):
-   - `~/.claude/skills/<skill-name>` (Claude Code default)
-   - `./<skill-name>` (current directory)
-   - `~/<skill-name>` (user home)
+```markdown
+## Path Convention
 
-2. **Use find command as fallback**:
-   ```bash
-   find ~ -type f -name "<marker-file>" -path "*/<skill-name>/*" 2>/dev/null | head -1
-   ```
+**SKILL_ROOT definition:**
+- **Claude Code users**: `SKILL_ROOT="$HOME/.claude/skills/<skill-name>"`
+- **Other environments**: Ask user for skill path on first use, store as `SKILL_ROOT` for session
 
-3. **Ask user if not found**:
-   Prompt user for the skill installation path
+All script calls use: `python3 $SKILL_ROOT/scripts/xxx.py`
+```
 
-4. **Store path in session variable**:
-   Use `SKILL_PATH` or similar variable for all subsequent script calls
-
-5. **Example pattern**:
-   ```bash
-   # Find skill path once at initialization
-   SKILL_PATH=$(test -f ~/.claude/skills/my-skill/script.py && echo "~/.claude/skills/my-skill" || find ~ -name "script.py" -path "*/my-skill/*" | sed 's|/script.py||')
-
-   # Use in all subsequent calls
-   python3 ${SKILL_PATH}/scripts/tool.py --args
-   ```
+**Benefits:**
+- No complex search logic needed
+- Clear and explicit
+- User-friendly for custom installations
+- Session-wide caching
 
 ### Python Environment Detection
 
