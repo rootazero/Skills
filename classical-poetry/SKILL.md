@@ -104,14 +104,45 @@ description: 创建古典汉诗（律诗/绝句/排律、词、曲、对联）�
 
 **目标：** 从古典诗词中提取与主题相关的意象词汇，确保作品具有古典风格。
 
+### 脚本路径定位（首次使用时执行）
+
+**在第一次调用脚本之前**，需要定位 `classical-poetry` skill 的安装位置。按以下顺序查找：
+
+1. 常见位置快速检查（按顺序尝试）：
+   ```bash
+   # 检查 Claude Code 默认位置
+   test -f ~/.claude/skills/classical-poetry/scripts/poetry_checker.py && echo "~/.claude/skills/classical-poetry"
+
+   # 检查当前工作目录
+   test -f ./classical-poetry/scripts/poetry_checker.py && echo "./classical-poetry"
+
+   # 检查用户 HOME 目录
+   test -f ~/classical-poetry/scripts/poetry_checker.py && echo "~/classical-poetry"
+   ```
+
+2. 如果以上位置都不存在，使用 `find` 搜索：
+   ```bash
+   find ~ -type f -name "poetry_checker.py" -path "*/classical-poetry/scripts/*" 2>/dev/null | head -1 | sed 's|/scripts/poetry_checker.py||'
+   ```
+
+3. 如果仍未找到，用中文询问用户：
+   ```
+   未能自动找到 classical-poetry 技能的安装位置。
+   请告诉我 classical-poetry 目录的完整路径（例如：/Users/username/skills/classical-poetry）
+   ```
+
+4. **记录找到的路径**，在本次会话的后续步骤中使用该路径，格式为：`SKILL_PATH`
+
+**重要：** 找到路径后，在后续所有脚本调用中使用 `${SKILL_PATH}/scripts/...` 来引用脚本。
+
 ### 意象搜索
 
 用中文告知用户："正在收集与「[主题]」相关的古典意象..."
 
-使用 `scripts/reference_builder.py` 获取相关古典诗词：
+使用 `reference_builder.py` 获取相关古典诗词：
 
 ```bash
-python3 ~/.claude/skills/classical-poetry/scripts/reference_builder.py \
+python3 ${SKILL_PATH}/scripts/reference_builder.py \
   --keyword "[主题]" --pages 2 --scope Sentence --top 30 \
   --out "/tmp/poetry_refs.json"
 ```
@@ -194,13 +225,13 @@ python3 ~/.claude/skills/classical-poetry/scripts/reference_builder.py \
 
 **对于诗：**
 ```bash
-python3 ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+python3 ${SKILL_PATH}/scripts/poetry_checker.py \
   --mode shi --text "[诗词文本]" --yun-shu [用户选择的韵书编号] [--trad如果是繁体]
 ```
 
 **对于词：**
 ```bash
-python3 ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+python3 ${SKILL_PATH}/scripts/poetry_checker.py \
   --mode ci --text "[词文本]" --ci-pai "[词牌名]" \
   --ci-pu [1|2] --yun-shu [用户选择的韵书编号] [--trad如果是繁体]
 ```
@@ -212,14 +243,14 @@ python3 ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
 
 **对于曲：**
 ```bash
-python3 ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+python3 ${SKILL_PATH}/scripts/poetry_checker.py \
   --mode qu --text "[曲文本]" --qu-pai "[曲牌名]" \
   --yun-shu [用户选择的韵书编号] [--trad如果是繁体]
 ```
 
 **对于对联：**
 ```bash
-python3 ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+python3 ${SKILL_PATH}/scripts/poetry_checker.py \
   --mode couplet --upper "[上联]" --lower "[下联]" \
   --yun-shu [用户选择的韵书编号] [--auto-suggest]
 ```
@@ -271,7 +302,7 @@ python3 ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
 对于对联，可使用 `--auto-suggest` 自动生成替代字：
 
 ```bash
-python3 ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
+python3 ${SKILL_PATH}/scripts/poetry_checker.py \
   --mode couplet --upper "[上联]" --lower "[下联]" \
   --yun-shu [用户选择的韵书编号] --auto-suggest
 ```
@@ -369,7 +400,10 @@ python3 ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
 - 1 = 钦定词谱（默认）
 - 2 = 龙榆生词谱
 
-**脚本路径：** `~/.claude/skills/classical-poetry/scripts/`
+**脚本路径：**
+- 动态定位（见"第二阶段：脚本路径定位"）
+- 在会话中使用 `${SKILL_PATH}/scripts/` 引用
+- 常见位置：`~/.claude/skills/classical-poetry/scripts/`（Claude Code 默认）
 
 ### Python 环境要求
 
@@ -395,6 +429,25 @@ python3 ~/.claude/skills/classical-poetry/scripts/poetry_checker.py \
 - `python3`（优先）
 - `python`（如果指向 Python 3.x）
 - 用户提供的自定义路径
+
+### 脚本路径定位说明
+
+**SKILL_PATH 变量：**
+在第二阶段"脚本路径定位"中找到的 skill 安装路径，整个会话中保持不变。
+
+**示例：**
+```bash
+# 如果找到路径为 ~/.claude/skills/classical-poetry
+SKILL_PATH="~/.claude/skills/classical-poetry"
+
+# 后续所有脚本调用使用此路径
+python3 ${SKILL_PATH}/scripts/poetry_checker.py --mode shi ...
+```
+
+**跨平台兼容性：**
+- Claude Code 用户：通常在 `~/.claude/skills/classical-poetry`
+- 自定义安装：用户可将 skill 放在任意位置
+- 其他工具：通过动态查找自动适配
 
 ## 创作技巧
 
